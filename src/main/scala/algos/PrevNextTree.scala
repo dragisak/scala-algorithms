@@ -3,11 +3,13 @@ package algos
 case class Node(
     value: Int,
     left: Option[Node] = None,
-    right: Option[Node] = None
+    right: Option[Node] = None,
+    prev: Option[Node] = None, // TODO
+    next: Option[Node] = None
 ) {
   def +(x: Int): Node =
     if (x < value) {
-      left match {
+      val a = left match {
         case Some(n) => copy(left = Some(n + x))
         case None    => copy(left = Some(Node(x)))
       }
@@ -21,6 +23,9 @@ case class Node(
     }
 
   def ++(xx: Iterable[Int]): Node = xx.foldLeft(this)(_ + _)
+
+  override def toString: String =
+    s"$value (${left.map(_.toString).getOrElse(" ")},${right.map(_.toString).getOrElse(" ")})"
 }
 
 object Tree {
