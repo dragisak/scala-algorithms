@@ -43,7 +43,7 @@ object Dag {
 
 object Solution {
 
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     val d = Dag(
       numberOfNodes = 7,
       edges = List(

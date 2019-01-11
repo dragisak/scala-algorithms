@@ -10,6 +10,10 @@ libraryDependencies ++= List(
 )
 
 
+addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9")
+
+addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0-M4")
+
 scalacOptions ++= List(
   "-deprecation",                      // Emit warning and location for usages of deprecated APIs.
   "-encoding", "utf-8",                // Specify character encoding used by source files.
@@ -41,4 +45,4 @@ scalacOptions ++= List(
   "-Xlint:unsound-match",              // Pattern match may not be typesafe.
   "-Yno-adapted-args",                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
   "-Ypartial-unification"              // Enable partial unification in type constructor inference
-) 
+)
