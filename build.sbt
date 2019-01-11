@@ -46,3 +46,7 @@ scalacOptions ++= List(
   "-Yno-adapted-args",                 // Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.
   "-Ypartial-unification"              // Enable partial unification in type constructor inference
 )
+
+initialCommands in console := """
+import cats.implicits._
+import algos.recursionscheme._"""
