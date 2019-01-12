@@ -1,4 +1,5 @@
 package algos.recursionscheme
+import algos.recursionscheme.Scheme.{expCoalgebra, foldExpInt}
 import cats.Functor
 
 sealed trait Exp
@@ -17,7 +18,7 @@ final case class AddF[A](x1: A, x2: A) extends ExpF[A]
 
 final case class MulF[A](x1: A, x2: A) extends ExpF[A]
 
-object Exp {
+object ExpF {
 
   implicit val expFunctor: Functor[ExpF] = new Functor[ExpF] {
     override def map[A, B](fa: ExpF[A])(f: A => B): ExpF[B] = fa match {
@@ -27,15 +28,23 @@ object Exp {
     }
   }
 
+  def constF[A](x: Int): ExpF[A]     = ConstF(x)
+  def addF[A](x1: A, x2: A): ExpF[A] = AddF(x1, x2)
+  def mulF[A](x1: A, x2: A): ExpF[A] = MulF(x1, x2)
+}
+
+object Exp {
+
   def const(x: Int): Exp         = Const(x)
   def add(x1: Exp, x2: Exp): Exp = Add(x1, x2)
   def mul(x1: Exp, x2: Exp): Exp = Mul(x1, x2)
 
-  def constF[A](x: Int): ExpF[A]     = ConstF(x)
-  def addF[A](x1: A, x2: A): ExpF[A] = AddF(x1, x2)
-  def mulF[A](x1: A, x2: A): ExpF[A] = MulF(x1, x2)
-
   implicit def toExp(i: Int): Exp = const(i)
+
+}
+
+object Scheme {
+  import ExpF._
 
   val expCoalgebra: Exp => ExpF[Exp] = {
     case Const(x)    => constF(x)
@@ -55,11 +64,42 @@ object Exp {
     case MulF(x1, x2) => s"$x1 * $x2"
   }
 
-  val expAna = ana(expCoalgebra)
+  val expAna: Exp => Fix[ExpF] = ana(expCoalgebra)
 
-  val expCata = cata(foldExpInt)
+  val expCata: Fix[ExpF] => Int = cata(foldExpInt)
 
-  val expHyloInt = hylo(foldExpInt)(expCoalgebra)
-  val expHyloStr = hylo(foldExpStr)(expCoalgebra)
+  val expHyloInt: Exp => Int    = hylo(foldExpInt)(expCoalgebra)
+  val expHyloStr: Exp => String = hylo(foldExpStr)(expCoalgebra)
+
+}
+
+object Droste {
+  import qq.droste._
+  import ExpF._
+
+  val expCoalgebra: Coalgebra[ExpF, Exp] = Coalgebra {
+    case Const(x)    => constF(x)
+    case Add(x1, x2) => addF(x1, x2)
+    case Mul(x1, x2) => mulF(x1, x2)
+  }
+
+  val intAlgebra: Algebra[ExpF, Int] = Algebra {
+    case ConstF(x)    => x
+    case AddF(x1, x2) => x1 + x2
+    case MulF(x1, x2) => x1 * x2
+  }
+
+  val strAlgebra: Algebra[ExpF, String] = Algebra {
+    case ConstF(x)    => x.toString
+    case AddF(x1, x2) => s"( $x1 + $x2 )"
+    case MulF(x1, x2) => s"$x1 * $x2"
+  }
+
+  val expAna: Exp => data.Fix[ExpF] = scheme.ana(expCoalgebra)
+
+  val expCata: data.Fix[ExpF] => Int = scheme.cata(intAlgebra)
+
+  val intHylo: Exp => Int   = scheme.hylo(intAlgebra, expCoalgebra)
+  val stHylo: Exp => String = scheme.hylo(strAlgebra, expCoalgebra)
 
 }

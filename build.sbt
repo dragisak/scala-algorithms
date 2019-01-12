@@ -6,7 +6,8 @@ scalaVersion := "2.12.8"
 
 
 libraryDependencies ++= List(
-  "org.typelevel" %% "cats-core" % "1.5.0"
+  "org.typelevel" %% "cats-core" % "1.5.0",
+  "io.higherkindness" %% "droste-core" % "0.6.0"
 )
 
 
