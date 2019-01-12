@@ -1,5 +1,4 @@
 package algos.recursionscheme
-import algos.recursionscheme.Scheme.{expCoalgebra, foldExpInt}
 import cats.Functor
 
 sealed trait Exp
