@@ -76,19 +76,19 @@ object Droste {
   import qq.droste._
   import ExpF._
 
-  val expCoalgebra: Coalgebra[ExpF, Exp] = Coalgebra {
+  val expCoalgebra: Coalgebra[ExpF, Exp] = Coalgebra { // A => ExpF[A]
     case Const(x)    => constF(x)
     case Add(x1, x2) => addF(x1, x2)
     case Mul(x1, x2) => mulF(x1, x2)
   }
 
-  val intAlgebra: Algebra[ExpF, Int] = Algebra {
+  val intAlgebra: Algebra[ExpF, Int] = Algebra { // ExpF[A] => A
     case ConstF(x)    => x
     case AddF(x1, x2) => x1 + x2
     case MulF(x1, x2) => x1 * x2
   }
 
-  val strAlgebra: Algebra[ExpF, String] = Algebra {
+  val strAlgebra: Algebra[ExpF, String] = Algebra { // ExpF[A] => A
     case ConstF(x)    => x.toString
     case AddF(x1, x2) => s"( $x1 + $x2 )"
     case MulF(x1, x2) => s"$x1 * $x2"
