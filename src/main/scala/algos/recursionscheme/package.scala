@@ -15,6 +15,9 @@ package object recursionscheme {
   def cata[F[_]: Functor, A](f: F[A] => A): Fix[F] => A =
     fix => f(fix.unfix map cata(f))
 
+  def hylo1[F[_]: Functor, A, B](f: F[B] => B)(g: A => F[A]): A => B =
+    ana(g) andThen cata(f)
+
   def hylo[F[_]: Functor, A, B](f: F[B] => B)(g: A => F[A]): A => B =
     a => f(g(a) map hylo(f)(g))
 
